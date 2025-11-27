@@ -1,8 +1,8 @@
 package com.destiny.global.entity;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
-import org.hibernate.annotations.Where;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -19,7 +19,6 @@ import lombok.Getter;
 
 @Getter
 @MappedSuperclass
-@Where(clause = "deleted_at IS NULL")
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
 	@CreatedDate
@@ -27,19 +26,19 @@ public abstract class BaseEntity {
 	private LocalDateTime createdAt;
 
 	@CreatedBy
-	private Long createdBy;
+	private UUID createdBy;
 
 	@LastModifiedDate
 	private LocalDateTime updatedAt;
 
 	@LastModifiedBy
-	private Long updatedBy;
+	private UUID updatedBy;
 
 	private LocalDateTime deletedAt;
 
-	private Long deletedBy;
+	private UUID deletedBy;
 
-	public void markDeleted(Long userId) {
+	public void markDeleted(UUID userId) {
 		if (isDeleted()) {
 			throw new BizException(CommonErrorCode.DATA_ALREADY_DELETED);
 		}
@@ -47,7 +46,7 @@ public abstract class BaseEntity {
 		this.deletedBy = userId;
 	}
 
-	public void restore(Long userId) {
+	public void restore(UUID userId) {
 		if (!isDeleted()) {
 			throw new BizException(CommonErrorCode.DATA_NOT_DELETED);
 		}
